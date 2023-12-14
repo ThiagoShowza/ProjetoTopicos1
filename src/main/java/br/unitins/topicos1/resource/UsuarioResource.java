@@ -41,7 +41,7 @@ public class UsuarioResource {
 
     @PUT
     @Transactional
-    @RolesAllowed({"Admin"})
+    @RolesAllowed({"User","Admin"})
     @Path("/{id}")
     public Response update(UsuarioDTO dto, @PathParam("id") Long id) {
         service.update(dto, id);

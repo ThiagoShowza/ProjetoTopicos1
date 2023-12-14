@@ -7,7 +7,9 @@ import br.unitins.topicos1.dto.UsuarioResponseDTO;
 import br.unitins.topicos1.model.Perfil;
 import br.unitins.topicos1.model.Usuario;
 import br.unitins.topicos1.repository.UsuarioRepository;
+import br.unitins.topicos1.resource.UsuarioLogadoResource;
 import br.unitins.topicos1.validation.ValidationException;
+import io.quarkus.security.ForbiddenException;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -21,6 +23,9 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     @Inject
     HashService hashService;
+
+    @Inject
+    UsuarioLogadoResource jwtLogadoResource;
 
     @Override
     @Transactional
@@ -43,6 +48,15 @@ public class UsuarioServiceImpl implements UsuarioService {
     @Override
     @Transactional
     public UsuarioResponseDTO update(UsuarioDTO dto, Long id) {
+    // Obtendo o login pelo token jwt
+    String loginUsuarioLogado = jwtLogadoResource.getSubject();
+
+    // Verificando se o usuário logado está tentando atualizar o próprio perfil
+    Usuario usuarioLogado = repository.findByLogin(loginUsuarioLogado);
+    if (usuarioLogado == null || !usuarioLogado.getId().equals(id)) {
+        throw new ForbiddenException("Você não tem permissão para atualizar este usuário.");
+    }
+
         Usuario usuario = repository.findById(id);
         usuario.setLogin(dto.login());
         usuario.setSenha(dto.senha());
