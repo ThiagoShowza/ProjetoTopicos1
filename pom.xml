@@ -69,6 +69,14 @@
 
 
 
+    <dependency>
+    <groupId>org.eclipse.microprofile.openapi</groupId>
+    <artifactId>microprofile-openapi-api</artifactId> <!-- Use a versão mais recente disponível -->
+    <scope>provided</scope>
+    </dependency>
+
+
+
     <!--DEPENDENCIA DO OBJECTMAPPER-->
     <dependency>
     <groupId>com.fasterxml.jackson.core</groupId>

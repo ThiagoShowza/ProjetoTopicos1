@@ -2,6 +2,8 @@ package br.unitins.topicos1.service;
 
 import java.util.List;
 
+import org.eclipse.microprofile.jwt.JsonWebToken;
+
 import br.unitins.topicos1.dto.UsuarioDTO;
 import br.unitins.topicos1.dto.UsuarioResponseDTO;
 import br.unitins.topicos1.model.Perfil;
@@ -25,7 +27,7 @@ public class UsuarioServiceImpl implements UsuarioService {
     HashService hashService;
 
     @Inject
-    UsuarioLogadoResource jwtLogadoResource;
+    JsonWebToken jwt;
 
     @Override
     @Transactional
@@ -40,7 +42,7 @@ public class UsuarioServiceImpl implements UsuarioService {
         novoUsuario.setSenha(hashService.getHashSenha(dto.senha()));
         novoUsuario.setPerfil(Perfil.valueOf(dto.idPerfil()));
 
-        repository.persist(novoUsuario);
+            repository.persist(novoUsuario);
 
         return UsuarioResponseDTO.valueOf(novoUsuario);
     }
@@ -49,7 +51,7 @@ public class UsuarioServiceImpl implements UsuarioService {
     @Transactional
     public UsuarioResponseDTO update(UsuarioDTO dto, Long id) {
     // Obtendo o login pelo token jwt
-    String loginUsuarioLogado = jwtLogadoResource.getSubject();
+    String loginUsuarioLogado = jwt.getSubject();
 
     // Verificando se o usuário logado está tentando atualizar o próprio perfil
     Usuario usuarioLogado = repository.findByLogin(loginUsuarioLogado);
@@ -59,7 +61,8 @@ public class UsuarioServiceImpl implements UsuarioService {
 
         Usuario usuario = repository.findById(id);
         usuario.setLogin(dto.login());
-        usuario.setSenha(dto.senha());
+        String hashSenha = hashService.getHashSenha(dto.senha());
+        usuario.setSenha(hashSenha);
 
         return UsuarioResponseDTO.valueOf(usuario);
     }

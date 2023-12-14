@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import org.eclipse.microprofile.jwt.JsonWebToken;
 // import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
+import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 
 import br.unitins.topicos1.dto.UsuarioResponseDTO;
 import br.unitins.topicos1.service.UsuarioService;
@@ -24,6 +25,7 @@ import jakarta.ws.rs.core.Response.Status;
 @Path("/usuariologado")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
+@APIResponse(responseCode = "403", description = "Você não tem permissão para acessar esse recurso.")
 public class UsuarioLogadoResource {
 
     @Inject
