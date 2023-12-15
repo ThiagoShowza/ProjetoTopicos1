@@ -34,7 +34,7 @@ public class UsuarioResource {
     JsonWebToken jwt;
 
     @POST
-    @RolesAllowed({"User"})
+    // @RolesAllowed({"User"})
     public Response insert(UsuarioDTO dto){
          return Response.status(Status.CREATED).entity(service.insert(dto)).build();
     }
@@ -71,9 +71,16 @@ public class UsuarioResource {
     }
     
     @GET
-    @RolesAllowed({"Admin"})
+    @RolesAllowed({"Admin"})//está nulo arrume em UsuarioServiceImpl
     @Path("/search/login/{login}")
     public Response findByNome(@PathParam("login") String login) {
         return Response.ok(service.findByNome(login)).build();
+    }
+
+    @GET
+    @RolesAllowed({"User","Admin"})
+    @Path("/my-user")
+    public Response findMyUser() {
+       return Response.ok(service.findMyUser()).build();
     }
 }

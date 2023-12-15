@@ -80,7 +80,7 @@ public class UsuarioServiceImpl implements UsuarioService {
         return UsuarioResponseDTO.valueOf(repository.findById(id));
     }
 
-    @Override
+    @Override //Está nulo
     public List<UsuarioResponseDTO> findByNome(String login) {
         return null;
     }
@@ -108,6 +108,16 @@ public class UsuarioServiceImpl implements UsuarioService {
         throw new ValidationException("login", "Login inválido");
         
         return UsuarioResponseDTO.valueOf(usuario);
+    }
+
+    @Override
+    public UsuarioResponseDTO findMyUser() {
+    // Obtendo o login pelo token jwt
+    String loginUsuarioLogado = jwt.getSubject();
+
+    // Verificando se o usuário logado está tentando atualizar o próprio perfil
+    Usuario usuarioLogado = repository.findByLogin(loginUsuarioLogado);
+    return UsuarioResponseDTO.valueOf(usuarioLogado);
     }
 
 }

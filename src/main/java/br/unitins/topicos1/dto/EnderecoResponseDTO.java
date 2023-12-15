@@ -5,7 +5,7 @@ import br.unitins.topicos1.model.Endereco;
 
 public record EnderecoResponseDTO(
         Long id,
-        Cidade cidade,
+        CidadeResponseDTO cidade,
         String bairro,
         String quadra,
         String rua,
@@ -13,7 +13,7 @@ public record EnderecoResponseDTO(
     public static EnderecoResponseDTO valueOf(Endereco endereco) {
         return new EnderecoResponseDTO(
                 endereco.getId(),
-                endereco.getCidade(),
+                CidadeResponseDTO.valueOf(endereco.getCidade()),
                 endereco.getBairro(),
                 endereco.getQuadra(),
                 endereco.getRua(),

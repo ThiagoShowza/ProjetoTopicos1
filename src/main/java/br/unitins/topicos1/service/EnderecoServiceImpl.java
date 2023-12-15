@@ -4,8 +4,14 @@ import java.util.List;
 
 import br.unitins.topicos1.dto.EnderecoDTO;
 import br.unitins.topicos1.dto.EnderecoResponseDTO;
+import br.unitins.topicos1.dto.UsuarioResponseDTO;
+import br.unitins.topicos1.model.Cidade;
 import br.unitins.topicos1.model.Endereco;
+import br.unitins.topicos1.model.Perfil;
+import br.unitins.topicos1.model.Pessoa;
+import br.unitins.topicos1.repository.CidadeRepository;
 import br.unitins.topicos1.repository.EnderecoRepository;
+import io.quarkus.security.ForbiddenException;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -17,15 +23,24 @@ public class EnderecoServiceImpl implements EnderecoService {
     @Inject
     EnderecoRepository repository;
 
+    @Inject
+    CidadeRepository cidadeRepository;
+    // @Inject
+    // UsuarioServiceImpl usuarioService;
+
+    // @Inject
+    // PessoaServiceImpl pessoaService;
+
     @Override
     @Transactional
     public EnderecoResponseDTO insert(EnderecoDTO dto) {
         Endereco novoEndereco = new Endereco();
-        novoEndereco.setCidade(dto.getCidade());
-        novoEndereco.setBairro(dto.getBairro());
-        novoEndereco.setQuadra(dto.getQuadra());
-        novoEndereco.setLote(dto.getLote());
-        novoEndereco.setRua(dto.getRua());
+        Cidade cidade = cidadeRepository.findById(dto.idCidade());
+        novoEndereco.setCidade(cidade);
+        novoEndereco.setBairro(dto.bairro());
+        novoEndereco.setQuadra(dto.quadra());
+        novoEndereco.setLote(dto.lote());
+        novoEndereco.setRua(dto.rua());
 
         repository.persist(novoEndereco);
 
@@ -35,18 +50,27 @@ public class EnderecoServiceImpl implements EnderecoService {
     @Override
     @Transactional
     public EnderecoResponseDTO update(EnderecoDTO dto, Long id) {
+        Endereco enderecoUpdate = repository.findById(id);
 
-        Endereco endereco = repository.findById(id);
-        if (endereco != null) {
-            endereco.setCidade(dto.getCidade());
-            endereco.setBairro(dto.getBairro());
-            endereco.setQuadra(dto.getQuadra());
-            endereco.setLote(dto.getLote());
-            endereco.setRua(dto.getRua());
+        // UsuarioResponseDTO usuarioLogado = usuarioService.myUser();
+        // Pessoa pessoa = pessoaService.findByEnderecoId(endereco.getId());
+        // if(usuarioLogado.perfil().equals(Perfil.ADMIN) || usuarioLogado.getId().equals(pessoa.getUsuario().getId())){
+        //    // Atualizar endereço
+        // }else{
+        //     throw new ForbiddenException("Você não tem permissão para atualizar este endereço.");
+        // }
+
+        if (enderecoUpdate != null) {
+            Cidade cidade = cidadeRepository.findById(dto.idCidade());
+            enderecoUpdate.setCidade(cidade);
+            enderecoUpdate.setBairro(dto.bairro());
+            enderecoUpdate.setQuadra(dto.quadra());
+            enderecoUpdate.setLote(dto.lote());
+            enderecoUpdate.setRua(dto.rua());
         } else
             throw new NotFoundException();
 
-        return EnderecoResponseDTO.valueOf(endereco);
+        return EnderecoResponseDTO.valueOf(enderecoUpdate);
     }
 
     @Override

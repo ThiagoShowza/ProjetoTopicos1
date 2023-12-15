@@ -33,7 +33,7 @@ public class CidadeResource {
 
 
     @POST
-    @RolesAllowed({"Admin"})
+    @RolesAllowed({"User","Admin"})
     public Response insert(@Valid CidadeDTO dto) {
         CidadeResponseDTO retorno = service.insert(dto);
         return Response.status(201).entity(retorno).build();

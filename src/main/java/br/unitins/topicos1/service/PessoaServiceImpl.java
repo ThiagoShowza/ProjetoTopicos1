@@ -1,11 +1,18 @@
 package br.unitins.topicos1.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import br.unitins.topicos1.dto.PessoaDTO;
 import br.unitins.topicos1.dto.PessoaResponseDTO;
+import br.unitins.topicos1.dto.TelefoneDTO;
+import br.unitins.topicos1.model.Endereco;
 import br.unitins.topicos1.model.Pessoa;
+import br.unitins.topicos1.model.Telefone;
+import br.unitins.topicos1.model.Usuario;
+import br.unitins.topicos1.repository.EnderecoRepository;
 import br.unitins.topicos1.repository.PessoaRepository;
+import br.unitins.topicos1.repository.UsuarioRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -17,16 +24,34 @@ public class PessoaServiceImpl implements PessoaService {
     @Inject
     PessoaRepository repository;
 
+    @Inject
+    EnderecoRepository enderecoRepository;
+
+    @Inject
+    UsuarioRepository usuarioRepository;
+
+
     @Override
     @Transactional
     public PessoaResponseDTO insert(PessoaDTO dto) {
         Pessoa novaPessoa = new Pessoa();
-        novaPessoa.setNome(dto.getNome());
-        novaPessoa.setCpf(dto.getCpf());
-        novaPessoa.setDataNascimento(dto.getDataNascimento());
-        novaPessoa.setEndereco(dto.getEndereco());
-        novaPessoa.setListaTelefone(dto.getListaTelefone());
-        novaPessoa.setUsuario(dto.getUsuario());
+        novaPessoa.setNome(dto.nome());
+        novaPessoa.setCpf(dto.cpf());
+        novaPessoa.setDataNascimento(dto.dataNascimento());
+        Endereco endereco = enderecoRepository.findById(dto.idEndereco());
+        novaPessoa.setEndereco(endereco);
+        if (dto.listaTelefone() != null &&
+                !dto.listaTelefone().isEmpty()) {
+            novaPessoa.setListaTelefone(new ArrayList<Telefone>());
+            for (TelefoneDTO tel : dto.listaTelefone()) {
+                Telefone telefone = new Telefone();
+                telefone.setCodigoArea(tel.getCodigoArea());
+                telefone.setNumero(tel.getNumero());
+                novaPessoa.getListaTelefone().add(telefone);
+            }
+        }
+        Usuario usuario = usuarioRepository.findById(dto.idUsuario());
+        novaPessoa.setUsuario(usuario);
 
         repository.persist(novaPessoa);
 
@@ -37,18 +62,31 @@ public class PessoaServiceImpl implements PessoaService {
     @Transactional
     public PessoaResponseDTO update(PessoaDTO dto, Long id) {
 
-        Pessoa pessoa = repository.findById(id);
-        if (pessoa != null) {
-            pessoa.setNome(dto.getNome());
-            pessoa.setCpf(dto.getCpf());
-            pessoa.setDataNascimento(dto.getDataNascimento());
-            pessoa.setEndereco(dto.getEndereco());
-            pessoa.setListaTelefone(dto.getListaTelefone());
-            pessoa.setUsuario(dto.getUsuario());
+        Pessoa pessoaUpdate = repository.findById(id);
+        if (pessoaUpdate != null) {
+        pessoaUpdate.setNome(dto.nome());
+        pessoaUpdate.setCpf(dto.cpf());
+        pessoaUpdate.setDataNascimento(dto.dataNascimento());
+        Endereco endereco = enderecoRepository.findById(dto.idEndereco());
+        pessoaUpdate.setEndereco(endereco);
+        if (dto.listaTelefone() != null &&
+                !dto.listaTelefone().isEmpty()) {
+            pessoaUpdate.setListaTelefone(new ArrayList<Telefone>());
+            for (TelefoneDTO tel : dto.listaTelefone()) {
+                Telefone telefone = new Telefone();
+                telefone.setCodigoArea(tel.getCodigoArea());
+                telefone.setNumero(tel.getNumero());
+                pessoaUpdate.getListaTelefone().add(telefone);
+            }
+        }
+        Usuario usuario = usuarioRepository.findById(dto.idUsuario());
+        pessoaUpdate.setUsuario(usuario);
+
+        repository.persist(pessoaUpdate);
         } else
             throw new NotFoundException();
 
-        return PessoaResponseDTO.valueOf(pessoa);
+        return PessoaResponseDTO.valueOf(pessoaUpdate);
     }
 
     @Override

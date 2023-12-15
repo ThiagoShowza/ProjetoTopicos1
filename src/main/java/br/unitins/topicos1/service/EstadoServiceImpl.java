@@ -4,7 +4,11 @@ import java.util.List;
 
 import br.unitins.topicos1.dto.EstadoDTO;
 import br.unitins.topicos1.dto.EstadoResponseDTO;
+import br.unitins.topicos1.dto.UsuarioDTO;
+import br.unitins.topicos1.dto.UsuarioResponseDTO;
 import br.unitins.topicos1.model.Estado;
+import br.unitins.topicos1.model.Perfil;
+import br.unitins.topicos1.model.Usuario;
 import br.unitins.topicos1.repository.EstadoRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -32,7 +36,7 @@ public class EstadoServiceImpl implements EstadoService {
     @Override
     @Transactional
     public EstadoResponseDTO update(EstadoDTO dto, Long id) {
-
+    
         Estado estado = repository.findById(id);
         if (estado != null) {
             estado.setNome(dto.getNome());

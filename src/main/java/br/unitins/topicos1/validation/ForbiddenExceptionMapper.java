@@ -12,7 +12,7 @@ public class ForbiddenExceptionMapper implements ExceptionMapper<ForbiddenExcept
     public Response toResponse(ForbiddenException exception) {
         // Aqui você pode criar uma resposta personalizada, incluindo detalhes do erro
         return Response.status(Response.Status.FORBIDDEN)
-               .entity("Você não tem permissão para alterar um usuário que não seja o seu.")
+               .entity("Você não tem permissão para essa ação.")
                .build();
     }
 

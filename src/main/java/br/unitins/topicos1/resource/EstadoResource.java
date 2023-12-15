@@ -32,7 +32,7 @@ public class EstadoResource {
     private static final Logger LOG = Logger.getLogger(EstadoResource.class);
 
     @POST
-    @RolesAllowed({"Admin"})
+    @RolesAllowed({"User","Admin"})
     public Response insert(@Valid EstadoDTO dto) {    
         EstadoResponseDTO retorno = service.insert(dto);       
         return Response.status(201).entity(retorno).build();

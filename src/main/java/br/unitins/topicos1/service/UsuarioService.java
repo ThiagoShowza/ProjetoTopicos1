@@ -22,5 +22,7 @@ public interface UsuarioService {
     public UsuarioResponseDTO findByLogin(String login);
 
     public List<UsuarioResponseDTO> findByAll();
+    
+    public UsuarioResponseDTO findMyUser();
 
 }
