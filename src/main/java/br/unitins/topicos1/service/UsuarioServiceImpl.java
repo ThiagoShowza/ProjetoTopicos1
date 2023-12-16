@@ -55,7 +55,7 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     // Verificando se o usuário logado está tentando atualizar o próprio perfil
     Usuario usuarioLogado = repository.findByLogin(loginUsuarioLogado);
-    if (usuarioLogado == null || !usuarioLogado.getId().equals(id)) {
+    if (usuarioLogado == null || usuarioLogado.getPerfil().equals(Perfil.USER) || !usuarioLogado.getId().equals(id) ) {
         throw new ForbiddenException("Você não tem permissão para atualizar este usuário.");
     }
 
