@@ -1,6 +1,5 @@
 package br.unitins.topicos1.dto;
 
-import br.unitins.topicos1.model.Cidade;
 import br.unitins.topicos1.model.Endereco;
 
 public record EnderecoResponseDTO(

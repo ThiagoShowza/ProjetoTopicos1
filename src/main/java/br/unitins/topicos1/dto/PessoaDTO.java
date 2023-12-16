@@ -1,7 +1,6 @@
 package br.unitins.topicos1.dto;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import jakarta.validation.constraints.NotBlank;

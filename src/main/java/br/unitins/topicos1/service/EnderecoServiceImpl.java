@@ -25,11 +25,12 @@ public class EnderecoServiceImpl implements EnderecoService {
 
     @Inject
     CidadeRepository cidadeRepository;
-    // @Inject
-    // UsuarioServiceImpl usuarioService;
 
-    // @Inject
-    // PessoaServiceImpl pessoaService;
+    @Inject
+    UsuarioServiceImpl usuarioService;
+
+    @Inject
+    PessoaServiceImpl pessoaService;
 
     @Override
     @Transactional
@@ -52,13 +53,13 @@ public class EnderecoServiceImpl implements EnderecoService {
     public EnderecoResponseDTO update(EnderecoDTO dto, Long id) {
         Endereco enderecoUpdate = repository.findById(id);
 
-        // UsuarioResponseDTO usuarioLogado = usuarioService.myUser();
-        // Pessoa pessoa = pessoaService.findByEnderecoId(endereco.getId());
-        // if(usuarioLogado.perfil().equals(Perfil.ADMIN) || usuarioLogado.getId().equals(pessoa.getUsuario().getId())){
-        //    // Atualizar endereço
-        // }else{
-        //     throw new ForbiddenException("Você não tem permissão para atualizar este endereço.");
-        // }
+        UsuarioResponseDTO usuarioLogado = usuarioService.findMyUser();
+        Pessoa pessoa = pessoaService.findByEnderecoId(enderecoUpdate.getId());
+        if(usuarioLogado.perfil().equals(Perfil.ADMIN) || usuarioLogado.getId().equals(pessoa.getUsuario().getId())){
+           // Atualizar endereço
+        }else{
+            throw new ForbiddenException("Você não tem permissão para atualizar este endereço.");
+        }
 
         if (enderecoUpdate != null) {
             Cidade cidade = cidadeRepository.findById(dto.idCidade());
