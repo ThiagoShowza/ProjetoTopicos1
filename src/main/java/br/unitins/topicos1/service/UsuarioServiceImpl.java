@@ -55,7 +55,7 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     // Verificando se o usuário logado está tentando atualizar o próprio perfil
     Usuario usuarioLogado = repository.findByLogin(loginUsuarioLogado);
-    if (usuarioLogado == null || usuarioLogado.getPerfil().equals(Perfil.USER) || !usuarioLogado.getId().equals(id) ) {
+    if (usuarioLogado == null || (usuarioLogado.getPerfil() != Perfil.ADMIN && !usuarioLogado.getId().equals(id)))  {
         throw new ForbiddenException("Você não tem permissão para atualizar este usuário.");
     }
 
@@ -80,9 +80,13 @@ public class UsuarioServiceImpl implements UsuarioService {
         return UsuarioResponseDTO.valueOf(repository.findById(id));
     }
 
-    @Override //Está nulo
+    @Override
     public List<UsuarioResponseDTO> findByNome(String login) {
-        return null;
+        List<Usuario> usuarios = repository.find("UPPER(login) LIKE UPPER(?1)", "%" + login + "%").list();
+        // Converte a lista de usuários para uma lista de DTOs de resposta
+        return usuarios.stream()
+                .map(UsuarioResponseDTO::valueOf)
+                .toList();
     }
 
     @Override

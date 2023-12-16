@@ -70,6 +70,7 @@ public class PessoaServiceImpl implements PessoaService {
         pessoaUpdate.setDataNascimento(dto.dataNascimento());
         Endereco endereco = enderecoRepository.findById(dto.idEndereco());
         pessoaUpdate.setEndereco(endereco);
+        
         if (dto.listaTelefone() != null &&
                 !dto.listaTelefone().isEmpty()) {
             pessoaUpdate.setListaTelefone(new ArrayList<Telefone>());

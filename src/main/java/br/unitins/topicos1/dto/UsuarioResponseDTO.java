@@ -24,14 +24,6 @@ public record UsuarioResponseDTO(
     public Long getId() {
         return id;
     }
-
-
-    // public record PerfilDTO(Integer id, String label) {
-    //     public static PerfilDTO valueOf(Perfil perfil) {
-    //         return new PerfilDTO(perfil.getId(), perfil.getLabel());
-    //     }
-    // }
-
     
 
 }

@@ -10,28 +10,32 @@ import static org.hamcrest.CoreMatchers.is;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-
 import org.junit.jupiter.api.Test;
-
 
 import io.restassured.http.ContentType;
 
-
 import io.restassured.response.Response;
-
+import br.unitins.topicos1.dto.LoginDTO;
 import br.unitins.topicos1.dto.UsuarioDTO;
 import br.unitins.topicos1.dto.UsuarioResponseDTO;
-
+import br.unitins.topicos1.model.Usuario;
+import br.unitins.topicos1.service.HashService;
+import br.unitins.topicos1.service.JwtService;
 import br.unitins.topicos1.service.UsuarioService;
 import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;
-
 
 @QuarkusTest
 public class UsuarioResourceTest {
 
         @Inject
+        HashService hashService;
+
+        @Inject
         UsuarioService usuarioService;
+
+        @Inject
+        JwtService jwtService;
 
         ObjectMapper objectMapper = new ObjectMapper();
 
@@ -54,55 +58,49 @@ public class UsuarioResourceTest {
 
         @Test
         public void testUpdate() {
-                // Crie um novo usuário para atualização
-                UsuarioDTO usuarioDTO = new UsuarioDTO("Teste", "1234", 2);
 
-                UsuarioResponseDTO usuarioTest = usuarioService.insert(usuarioDTO);
-                Long id = usuarioTest.id();
+                UsuarioDTO usuarioDTO = new UsuarioDTO(
+                                "maria.user",
+                                "1234",
+                                1);
 
-                // Crie um novo DTO para a atualização do usuário
-                UsuarioDTO dtoUpdate = new UsuarioDTO(
-                                "testeNovo",
-                                "555",
-                                2);
+                String hashSenha = hashService.getHashSenha(usuarioDTO.senha());
+                UsuarioResponseDTO result = usuarioService.findByLoginAndSenha(usuarioDTO.login(),
+                                hashSenha.toString());
 
-                // Faça a requisição PUT para atualizar o usuário
+                String tokenUser = jwtService.generateJwt(result);
+
                 given()
+                                .headers("Authorization", "Bearer " + tokenUser)
                                 .contentType(ContentType.JSON)
-                                .body(dtoUpdate)
-                                .when().put("/usuarios/" + id)
+                                .body(usuarioDTO)
+                                .when()
+                                .put("/usuarios/1")
                                 .then()
                                 .statusCode(204);
-
-                UsuarioResponseDTO updatedUser = usuarioService.findById(id);
-                assertEquals(dtoUpdate.login(), "testeNovo");
-                assertEquals(dtoUpdate.senha(), "555");
-
         }
 
         @Test
         public void testDelete() {
                 // Insira um registro de teste antes de deletar
-                UsuarioDTO usuarioDTO = new UsuarioDTO("Teste", "1234", 1);
+                UsuarioDTO usuarioDTO = new UsuarioDTO("joao.admin", "1234",2);
 
-                Response insertResponse = given()
-                                .contentType(ContentType.JSON)
-                                .body(usuarioDTO)
-                                .when()
-                                .post("/usuarios");
+                String hashSenha = hashService.getHashSenha(usuarioDTO.senha());
+                UsuarioResponseDTO result = usuarioService.findByLoginAndSenha(usuarioDTO.login(),
+                                hashSenha.toString());
 
-                insertResponse.then()
-                                .statusCode(201);
+                String tokenAdm = jwtService.generateJwt(result);
 
-                Long id = insertResponse.jsonPath().getLong("id");
-
-                // Agora teste o método de exclusão
                 given()
-                                .when()
-                                .delete("/usuarios/" + id)
-                                .then()
-                                .statusCode(204);
+                .headers("Authorization", "Bearer " + tokenAdm)
+                .contentType(ContentType.JSON)
+            .when()
+            .delete("/usuarios/3")
+            .then()
+            .statusCode(204);
         }
+
+
 
         @Test
         public void testFindAll() {

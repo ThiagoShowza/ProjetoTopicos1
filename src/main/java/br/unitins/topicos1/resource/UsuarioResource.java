@@ -33,13 +33,12 @@ public class UsuarioResource {
     @Inject
     JsonWebToken jwt;
 
-    @POST
-    // @RolesAllowed({"User"})
+    @POST//INSERIR USUARIO
     public Response insert(UsuarioDTO dto){
          return Response.status(Status.CREATED).entity(service.insert(dto)).build();
     }
 
-    @PUT
+    @PUT//AUTUALIZAR USUARIO
     @Transactional
     @RolesAllowed({"User","Admin"})
     @Path("/{id}")
@@ -48,36 +47,36 @@ public class UsuarioResource {
         return Response.noContent().build();
     }
 
-    @DELETE
+    @DELETE//DELETAR USUARIO
     @Transactional
     @RolesAllowed({"Admin"})
     @Path("/{id}")
     public Response delete(@PathParam("id") Long id) {
         service.delete(id);
-        return Response.noContent().build();
+        return Response.status(Status.NO_CONTENT).build();
     }
-
-    @GET
+ 
+    @GET//LISTAR TODOS
     @RolesAllowed({"Admin"})
     public Response findAll() {
         return Response.ok(service.findByAll()).build();
     }
 
-    @GET
+    @GET//LISTAR POR ID
     @RolesAllowed({"Admin"})
     @Path("/{id}")
     public Response findById(@PathParam("id") Long id) {
        return Response.ok(service.findById(id)).build();
     }
     
-    @GET
-    @RolesAllowed({"Admin"})//está nulo arrume em UsuarioServiceImpl
+    @GET//LISTAR POR NOME
+    @RolesAllowed({"Admin"})
     @Path("/search/login/{login}")
     public Response findByNome(@PathParam("login") String login) {
         return Response.ok(service.findByNome(login)).build();
     }
 
-    @GET
+    @GET//LISTAR MEU USUÁRIO
     @RolesAllowed({"User","Admin"})
     @Path("/my-user")
     public Response findMyUser() {
