@@ -2,6 +2,7 @@ package br.unitins.topicos1.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import br.unitins.topicos1.dto.PessoaDTO;
 import br.unitins.topicos1.dto.PessoaResponseDTO;
@@ -94,6 +95,14 @@ public class PessoaServiceImpl implements PessoaService {
     public void delete(Long id) {
         if (!repository.deleteById(id))
             throw new NotFoundException();
+    }
+
+
+    @Override
+    public List<PessoaResponseDTO> findByEnderecoId(Long enderecoId) {
+        return repository.findByEnderecoId(enderecoId).stream()
+                .map(PessoaResponseDTO::valueOf)
+                .collect(Collectors.toList());
     }
 
     @Override

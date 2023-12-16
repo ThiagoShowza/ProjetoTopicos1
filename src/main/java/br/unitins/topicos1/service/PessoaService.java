@@ -19,4 +19,7 @@ public interface PessoaService {
 
     public List<PessoaResponseDTO> findByAll(); 
 
+    public List<PessoaResponseDTO> findByEnderecoId(Long enderecoId);
+    
+
 }

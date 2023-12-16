@@ -2,6 +2,8 @@ package br.unitins.topicos1.resource;
 
 
 
+import java.util.List;
+
 import org.jboss.logging.Logger;
 
 import br.unitins.topicos1.dto.PessoaDTO;
@@ -62,6 +64,16 @@ public class PessoaResource {
         service.delete(id);
         return Response.status(Status.NO_CONTENT).build();
     }
+
+
+    @GET
+    @RolesAllowed({"Admin"})
+    @Path("/search/endereco/{enderecoId}")
+    public Response findByEnderecoId(@PathParam("enderecoId") Long enderecoId) {
+        List<PessoaResponseDTO> pessoas = service.findByEnderecoId(enderecoId);
+        return Response.ok(pessoas).build();
+    }
+
 
     @GET
     @RolesAllowed({"Admin"})
