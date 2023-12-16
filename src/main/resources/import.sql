@@ -124,3 +124,12 @@ VALUES
   (8, 31, '90000-1111'),
   (9, 48, '97777-5555'),
   (10, 84, '98888-2222');
+
+  --Insert de produtos
+
+  INSERT INTO Produto (id, estoque, nome, preco) VALUES
+    (1, 10, 'Produto A', 50.0),
+    (2, 15, 'Produto B', 30.0 ),
+    (3, 20, 'Produto C', 25.0 ),
+    (4, 8, 'Produto D', 60.0),
+    (5, 12, 'Produto E', 40.0);

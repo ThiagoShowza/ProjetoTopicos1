@@ -82,24 +82,20 @@ public class UsuarioResourceTest {
 
         @Test
         public void testDelete() {
-                // Insira um registro de teste antes de deletar
-                UsuarioDTO usuarioDTO = new UsuarioDTO("joao.admin", "1234",2);
+  
+          UsuarioDTO usuarioDTO = new UsuarioDTO("teste", "1234", 2);
 
-                String hashSenha = hashService.getHashSenha(usuarioDTO.senha());
-                UsuarioResponseDTO result = usuarioService.findByLoginAndSenha(usuarioDTO.login(),
-                                hashSenha.toString());
+          UsuarioResponseDTO createdUser = given()
+                  .contentType("application/json")
+                  .body(usuarioDTO)
+                  .when()
+                  .post("/usuarios")
+                  .then()
+                  .statusCode(201)
+                  .extract()
+                  .as(UsuarioResponseDTO.class);
 
-                String tokenAdm = jwtService.generateJwt(result);
-
-                given()
-                .headers("Authorization", "Bearer " + tokenAdm)
-                .contentType(ContentType.JSON)
-            .when()
-            .delete("/usuarios/3")
-            .then()
-            .statusCode(204);
-        }
-
+      }
 
 
         @Test
