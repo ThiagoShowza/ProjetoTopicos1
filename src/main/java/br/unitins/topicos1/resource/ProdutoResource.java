@@ -1,5 +1,6 @@
 package br.unitins.topicos1.resource;
 
+import java.io.File;
 import java.io.IOException;
 
 import br.unitins.topicos1.service.ProdutoFileService;
@@ -45,9 +46,6 @@ public class ProdutoResource {
     @Inject
     ProdutoFileService fileService;
 
-
-
-
     @Inject
     JsonWebToken jwt;
 
@@ -88,7 +86,7 @@ public class ProdutoResource {
     }
 
     @GET
-    @RolesAllowed({"User", "Admin"})
+    @RolesAllowed({ "Admin"})
     @Path("/{id}")
     public Response findById(@PathParam("id") Long id) {
         LOG.infof("buscando todos o prduto por id");
@@ -97,7 +95,7 @@ public class ProdutoResource {
 
     @PATCH
     @Path("/upload/imagem/{id}")
-    @RolesAllowed({ "User", "Admin"})
+    @RolesAllowed({ "Admin"})
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     public Response salvarImagem(@MultipartForm ProdutoImageForm form, @PathParam("id") Long id) throws IOException {
         String nomeImagem;
@@ -109,12 +107,23 @@ public class ProdutoResource {
 
     }
 
-    @GET
-    @Path("/download/imagem/{nomeImagem}")
-    @RolesAllowed({ "User", "Admin", "streamer" })
-    @Produces(MediaType.APPLICATION_OCTET_STREAM)
-    public Response download(@PathParam("nomeImagem") String nomeImagem) {
-        ResponseBuilder response = Response.ok(fileService.obter(nomeImagem));
-        response.header("Content-Disposition", "attachment;filename="+nomeImagem);
-        return response.build();
-}}
+@GET
+@Path("/download/imagem/{nomeImagem}")
+@RolesAllowed({"Admin"})
+@Produces(MediaType.APPLICATION_OCTET_STREAM)
+public Response download(@PathParam("nomeImagem") String nomeImagem) {
+    // Obtain the File object corresponding to the requested image name
+    File file = fileService.obter(nomeImagem);
+    
+    // Create a ResponseBuilder with the file content
+    ResponseBuilder response = Response.ok(fileService.obter(nomeImagem));
+    
+    // Set the Content-Disposition header to specify the filename for the downloaded file
+    response.header("Content-Disposition", "attachment;filename=" + nomeImagem);
+    
+    // Build and return the Response object
+    return response.build();
+}
+
+
+}
